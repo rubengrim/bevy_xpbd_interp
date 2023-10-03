@@ -1,3 +1,5 @@
+//! Sets up the XPBDInterplationPlugin.
+
 use bevy::{prelude::*, transform::TransformSystem};
 use bevy_xpbd_3d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
 

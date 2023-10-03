@@ -1,21 +1,30 @@
+//! **bevy_xpbd_interp** is a simple tool for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies.
+//! It operates by interpolating between the position/rotation of the current and previous physics update, and passing the interpolated values to the `Transform` of some separate entity holding any meshes/cameras etc.
+//! This means perfectly smooth results even at physics update frequencies as low as 1hz.
+//! The results are especially noticeable for entities with cameras attached to them.
+
 use bevy::prelude::*;
 use bevy_xpbd_3d::prelude::*;
 
 pub mod plugin;
 pub mod prelude;
 
-/// Runs in PhysicsUpdate before PhysicsStepSet::BroadPhase
+/// System set running in `PhysicsUpdate` before `PhysicsStepSet::BroadPhase`
 #[derive(SystemSet, Debug, PartialEq, Eq, Clone, Hash)]
 pub struct InterpolationCopySet;
 
-/// Runs in PostUpdate between PhysicsSet::Sync and TransformSystem::TransformPropagate
+/// System set running in `PostUpdate` between `PhysicsSet::Sync` and `TransformSystem::TransformPropagate`
 #[derive(SystemSet, Debug, PartialEq, Eq, Clone, Hash)]
 pub enum InterpolationSet {
+    /// Where the interpolation takes place.
     Interpolation,
-    /// Can be used to safely schedule systems after interpolation but before transforms are propagated by bevy.
+    /// `bevy_xpbd_interp` schedules nothing here, but it can be used to safely schedule systems after interpolation but before transforms are propagated by bevy.
+    /// One use case would be scheduling updating the camera position to follow some interpolated position here.
     PostInterpolation,
 }
 
+/// Does not store the actual interpolated position value, but instead the cached position from the previous physics update and the entity holding the `Position` affected by a `Rigidbody`.
+/// The interpolated position value is automatically given to the `Transform` of any entity with a `InterpolatedPosition`.
 #[derive(Component)]
 pub struct InterpolatedPosition {
     pub source: Entity,
@@ -35,6 +44,8 @@ impl InterpolatedPosition {
     }
 }
 
+/// Does not store the actual interpolated rotation value, but instead the cached rotation from the previous physics update and the entity holding the ´Rotation´ affected by a `Rigidbody`.
+/// The interpolated rotation value is automatically given to the `Transform` of any entity with a `InterpolatedRotation`.
 #[derive(Component)]
 pub struct InterpolatedRotation {
     pub source: Entity,
@@ -54,6 +65,8 @@ impl InterpolatedRotation {
     }
 }
 
+/// Caches the `Position` value of the source entity for every `InterpolatedPosition`.
+/// Runs in `InterpolationCopySet`.
 fn copy_position(
     mut interp_position_q: Query<&mut InterpolatedPosition>,
     source_position_q: Query<&Position>,
@@ -64,6 +77,8 @@ fn copy_position(
     }
 }
 
+/// Caches the `Rotation` value of the source entity for every `InterpolatedRotation`.
+/// Runs in `InterpolationCopySet`.
 fn copy_rotation(
     mut interp_rotation_q: Query<&mut InterpolatedRotation>,
     source_rotation_q: Query<&Rotation>,
@@ -74,6 +89,8 @@ fn copy_rotation(
     }
 }
 
+/// Performs position interpolation and stores the result in the `Transform` of the entity with the `InterpolatedPosition`.
+/// Runs in `InterpolationSet::Interpolation`.
 fn interpolate_position(
     mut interp_q: Query<(&mut Transform, &InterpolatedPosition)>,
     source_q: Query<&Position>,
@@ -111,6 +128,8 @@ fn interpolate_position(
     }
 }
 
+/// Performs rotation interpolation and stores the result in the `Transform` of the entity with the `InterpolatedRotation`.
+/// Runs in `InterpolationSet::Interpolation`.
 fn interpolate_rotation(
     mut interp_q: Query<(&mut Transform, &InterpolatedRotation)>,
     source_q: Query<&Rotation>,

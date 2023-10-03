@@ -1,3 +1,5 @@
+// This example sets up a rigidbody that is rotated and moved by bevy_xpbd, and a separate entity with a rendered box and InterpolatedPosition/Rotation components.
+
 use bevy::prelude::*;
 use bevy_xpbd_3d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
 use bevy_xpbd_interp::prelude::*;
