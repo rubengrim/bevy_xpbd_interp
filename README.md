@@ -1,5 +1,3 @@
-# Bevy XPBD Interp
-
 **Bevy XPBD Interp** is a simple library for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies. It operates by interpolating between the position/rotation of the current and previous physics update based on how much time has accumulated since the last physics update. The interpolated value is then stored in the `Transform` of some separate entity that may hold meshes/cameras etc. This means perfectly smooth results even at physics update frequencies as low as 1hz. Interpolation makes a noticeable difference at frequencies closer to 60hz as well though.
 
 ### Usage
@@ -8,7 +6,7 @@ Add `bevy_xpbd_interp` as a dependency in your `Cargo.toml`:
 [dependencies]  
 bevy_xpbd_interp = "0.1.0"
 ```
-> Note: The released version of `bevy_xpbd` cannot be used with `bevy_xpbd_interp` since a value I need to access is private in the release. Use the main git branch instead with
+> Note: The released version of `bevy_xpbd` cannot be used with `bevy_xpbd_interp` since a value that needs to be accessed is private in the release. Use the main git branch instead with
 > `bevy_xpbd_3d = { git = "https://github.com/Jondolf/bevy_xpbd", branch = "main" }`
 > 
 Then add `XPBDInterpolationPlugin` to your app:
