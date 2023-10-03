@@ -7,10 +7,7 @@ pub struct XPBDInterpolationPlugin;
 
 impl Plugin for XPBDInterpolationPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(ShouldInterpolateXPBD(true));
-
-        #[cfg(feature = "enable_toggle_with_space")]
-        app.add_systems(Update, toggle_should_interp);
+        app.init_resource::<ShouldInterpolate>();
 
         app.configure_set(
             PhysicsSchedule,
@@ -18,15 +15,13 @@ impl Plugin for XPBDInterpolationPlugin {
         )
         .add_systems(
             PhysicsSchedule,
-            (crate::copy_position, crate::copy_rotation)
-                .chain()
-                .in_set(InterpolationCopySet),
+            crate::copy_position.in_set(InterpolationCopySet),
         );
 
         app.configure_sets(
             PostUpdate,
             (
-                InterpolationSet::Interpolate,
+                InterpolationSet::Interpolation,
                 InterpolationSet::PostInterpolation,
             )
                 .chain()
@@ -35,18 +30,7 @@ impl Plugin for XPBDInterpolationPlugin {
         )
         .add_systems(
             PostUpdate,
-            (crate::interpolate_position, crate::interpolate_rotation)
-                .chain()
-                .in_set(InterpolationSet::Interpolate),
+            crate::interpolate_position.in_set(InterpolationSet::Interpolation),
         );
-
-        // app.add_systems(
-        //     PostUpdate,
-        //     crate::update_interpolation.in_set(InterpolationSet),
-        // )
-        // .add_systems(
-        //     PhysicsSchedule,
-        //     crate::copy_old_transforms.in_set(InterpolationCopySet),
-        // );
     }
 }

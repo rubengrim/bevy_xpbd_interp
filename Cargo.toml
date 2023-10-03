@@ -3,11 +3,6 @@ name = "bevy_xpbd_interp"
 version = "0.1.0"
 edition = "2021"
 
-[features]
-default = ["enable_toggle_with_space"]
-enable_toggle_with_space = []
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.dev]
 opt-level = 1
 
