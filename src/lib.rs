@@ -35,7 +35,7 @@ pub struct InterpolatedPosition {
 }
 
 impl InterpolatedPosition {
-    pub fn new(source: Entity) -> Self {
+    pub fn from_source(source: Entity) -> Self {
         Self {
             source,
             previous_position: None,
@@ -56,7 +56,7 @@ pub struct InterpolatedRotation {
 }
 
 impl InterpolatedRotation {
-    pub fn new(source: Entity) -> Self {
+    pub fn from_source(source: Entity) -> Self {
         Self {
             source,
             previous_rotation: None,
