@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_xpbd_3d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
 use bevy_xpbd_interp::prelude::*;
 
-const PHYSICS_TIMESTEP: f32 = 1. / 30.; // Inverse of frequency
+const PHYSICS_UPDATE_FREQ: f32 = 10.0;
 
 fn main() {
     App::new()
@@ -17,8 +17,8 @@ fn main() {
             update_box.before(PhysicsStepSet::BroadPhase),
         )
         .add_systems(Update, (toggle_interpolation, update_ui))
-        .insert_resource(PhysicsTimestep::Fixed(PHYSICS_TIMESTEP))
-        .insert_resource(IsInterpolating(true))
+        .insert_resource(PhysicsTimestep::Fixed(1.0 / PHYSICS_UPDATE_FREQ))
+        .insert_resource(IsInterpolating(true)) // Has no effect on actual interpolation, is just for ui
         .run();
 }
 
@@ -48,6 +48,7 @@ fn setup(
             ..default()
         },
         InterpolatedPosition::new(physics_entity),
+        InterpolatedRotation::new(physics_entity),
     ));
 
     // Camera
@@ -113,27 +114,25 @@ fn update_box(
     }
 }
 
-// Has no effect on actual interpolation, is just for ui.
+// Has no effect on actual interpolation, is just for ui
 #[derive(Resource)]
 struct IsInterpolating(bool);
 
 fn toggle_interpolation(
-    mut interp_position_q: Query<&mut InterpolatedPosition>,
+    mut interp_q: Query<(&mut InterpolatedPosition, &mut InterpolatedRotation)>,
     mut is_interpolating: ResMut<IsInterpolating>,
     keyboard_input: Res<Input<KeyCode>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Space) {
-        let pass_through = &mut interp_position_q.single_mut().pass_through;
-        *pass_through = !*pass_through;
-        is_interpolating.0 = !*pass_through;
+        let (mut pos, mut rot) = interp_q.single_mut();
+        pos.pass_through = !pos.pass_through;
+        rot.pass_through = !rot.pass_through;
+
+        is_interpolating.0 = !pos.pass_through;
     }
 }
 
-fn update_ui(
-    mut text: Query<&mut Text>,
-    is_interpolating: Res<IsInterpolating>,
-    phys_timestep: Res<PhysicsTimestep>,
-) {
+fn update_ui(mut text: Query<&mut Text>, is_interpolating: Res<IsInterpolating>) {
     let mut text = text.single_mut();
     let text = &mut text.sections[0].value;
 
@@ -148,10 +147,8 @@ fn update_ui(
         text.push_str("\n\nInterpolation: off");
     }
 
-    if let PhysicsTimestep::Fixed(time_step) = *phys_timestep {
-        text.push_str(&format!(
-            "\nPhysics update freq: {}hz (Update PHYSICS_TIMESTEP const in 'examples/box.rs')",
-            (1.0 / time_step).round()
-        ));
-    }
+    text.push_str(&format!(
+        "\nPhysics update frequency: {}hz (See PHYSICS_UPDATE_FREQ const in 'examples/box.rs')",
+        PHYSICS_UPDATE_FREQ
+    ));
 }
