@@ -1,26 +1,30 @@
-**Bevy XPBD Interp** is a simple library for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies. It operates by interpolating between the position/rotation of the current and previous physics update based on how much time has accumulated since the last physics update. The interpolated value is then stored in the `Transform` of some separate entity that may hold meshes/cameras etc. This means perfectly smooth results even at physics update rates as low as 1hz. Interpolation usually makes a noticeable difference at rates closer to the refresh rate of your monitor as well though.
+
+**Bevy XPBD Interp** is a simple library for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies. It operates by interpolating between the position/rotation of the current and previous physics states based on how much time has accumulated since the last physics update. The interpolated value is stored in the `Transform` of some separate entity that may hold meshes/cameras etc. Physics objects essentially need to be split up into one entity being affected by physics, and one entity being rendered.
+
+In a lot of cases interpolation makes a noticeable difference at normal/higher physics update frequencies, eg. 60hz, but you'll see perfectly smooth movement even at 1hz.
+
+> Note: `bevy_xpbd` is split into a 2d and a 3d crate. This library does the same and is split up into `bevy_xpbd_2d_interp` and `bevy_xpbd_3d_interp`.
+> 
 
 ### Usage
-Add `bevy_xpbd_interp` as a git dependency:
+Add `bevy_xpbd` and `bevy_xpbd_interp` as dependencies:
 ```toml
 [dependencies]  
-bevy_xpbd_interp = { git = "https://github.com/rubengrim/bevy_xpbd_interp", branch = "main" }
-```
-Alternatively, clone the repo and add it like so:
-```toml
+bevy_xpbd_2d = "0.3.1"
+bevy_xpbd_2d_interp = "0.1.0"
+// or
 [dependencies]  
-bevy_xpbd_interp = { path = "path/to/bevy_xpbd_interp" }
+bevy_xpbd_3d = "0.3.1"
+bevy_xpbd_3d_interp = "0.1.0"
 ```
-> Note: The released version of `bevy_xpbd` cannot be used with `bevy_xpbd_interp` since a value that needs to be accessed is private in the release. You need to use the main git branch in your project instead with
-> `bevy_xpbd_3d = { git = "https://github.com/Jondolf/bevy_xpbd", branch = "main" }`. This also means `bevy_xpbd_interp` cannot be published to crates.io.
-> 
+
 Then add `XPBDInterpolationPlugin` to your app:
 ```rust
 app.add_plugins(XPBDInterpolationPlugin);
 ```
-Now you can add the `InterpolatedPosition` and/or `InterpolatedRotation` components to any entity with a `Transform`.
+Now you can add the `InterpolatedPosition` and/or `InterpolatedRotation` components to any entity with a `Transform`:
 ```rust
-// The entity being transformed by bevy_xpbd
+// The entity being affected by bevy_xpbd
 let physics_entity = commands
     .spawn((
         RigidBody::Kinematic,
@@ -41,9 +45,10 @@ commands.spawn((
 ));
 ```
 
-See `'examples/box.rs'` for a full example. Run it with `cargo run --example box`.
+See `'crates/bevy_xpbd_2d_interp/examples/box_2d.rs'` and `'crates/bevy_xpbd_3d_interp/examples/box_3d.rs'` for full examples. Run them with `cargo run --example box_2d/box_3d`.
 
-### Limitations
-- Currently depends on the main branch of `bevy_xpbd` and not a release.
-- Currently only set up for `bevy_xpbd_3d` and not `bevy_xpbd_2d`.
-- Only interpolates from `bevy_xpbd` and not from any arbitrary fixed-update schedule, because `bevy_xpbd` uses a custom solution for fixed timesteps. The same principle used here can be used for any fixed-update schedule though, it's just a matter of using the right accumulator value.
+### Supported versions
+
+| Bevy | Bevy XPBD | Bevy XPBD Interp |
+| ---- | --------- | ---------------- |
+| 0.12 | 0.3.1     | 0.1.0            |

@@ -1,7 +1,6 @@
-//! **bevy_xpbd_interp** is a simple tool for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies.
-//! It operates by interpolating between the position/rotation of the current and previous physics update, and passing the interpolated values to the `Transform` of some separate entity holding any meshes/cameras etc.
-//! This means perfectly smooth results even at physics update frequencies as low as 1hz.
-//! The results are especially noticeable for entities with cameras attached to them.
+//! **Bevy XPBD Interp** is a simple library for interpolation of [bevy_xpbd](https://github.com/Jondolf/bevy_xpbd/) rigidbodies.
+//! It operates by interpolating between the position/rotation of the current and previous physics update based on how much time has accumulated since the last physics update.
+//! The interpolated value is then stored in the `Transform` of some separate entity that may hold meshes/cameras etc.
 
 use bevy::prelude::*;
 #[cfg(feature = "2d")]
