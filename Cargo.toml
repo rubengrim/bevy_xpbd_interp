@@ -1,14 +1,3 @@
-[package]
-name = "bevy_xpbd_interp"
-version = "0.1.0"
-edition = "2021"
-description = "A simple library for interpolation of bevy_xpbd rigidbodies"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rubengrim/bevy_xpbd_interp"
-
-[profile.dev]
-opt-level = 1
-
-[dependencies]
-bevy = "0.11.3"
-bevy_xpbd_3d = { git = "https://github.com/Jondolf/bevy_xpbd", branch = "main" }
+[workspace]
+members = ["crates/bevy_xpbd_2d_interp", "crates/bevy_xpbd_3d_interp"]
+resolver = "2"

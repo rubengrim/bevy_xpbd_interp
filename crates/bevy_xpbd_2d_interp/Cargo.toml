@@ -1,0 +1,23 @@
+[package]
+name = "bevy_xpbd_2d_interp"
+version = "0.1.0"
+edition = "2021"
+description = "A simple library for interpolation of bevy_xpbd rigidbodies"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rubengrim/bevy_xpbd_interp"
+readme = "README.md"
+keywords = ["gamedev", "physics", "interpolation", "xpbd", "bevy"]
+categories = ["game-development", "science", "simulation"]
+
+[features]
+default = ["2d"]
+2d = []
+
+[lib]
+name = "bevy_xpbd_2d_interp"
+path = "../../src/lib.rs"
+required-features = ["2d"]
+
+[dependencies]
+bevy = "0.12"
+bevy_xpbd_2d = "0.3.1"

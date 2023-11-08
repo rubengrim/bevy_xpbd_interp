@@ -1,6 +1,9 @@
 //! Sets up the XPBDInterplationPlugin.
 
 use bevy::{prelude::*, transform::TransformSystem};
+#[cfg(feature = "2d")]
+use bevy_xpbd_2d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
+#[cfg(feature = "3d")]
 use bevy_xpbd_3d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
 
 use crate::prelude::*;
@@ -9,7 +12,7 @@ pub struct XPBDInterpolationPlugin;
 
 impl Plugin for XPBDInterpolationPlugin {
     fn build(&self, app: &mut App) {
-        app.configure_set(
+        app.configure_sets(
             PhysicsSchedule,
             InterpolationCopySet.before(PhysicsStepSet::BroadPhase),
         )

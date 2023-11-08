@@ -1,10 +1,10 @@
 // This example sets up a rigidbody that is rotated and moved by bevy_xpbd, and a separate entity with a rendered box and InterpolatedPosition/Rotation components.
 
 use bevy::prelude::*;
-use bevy_xpbd_3d::{prelude::*, PhysicsSchedule, PhysicsStepSet};
-use bevy_xpbd_interp::prelude::*;
+use bevy_xpbd_3d::prelude::*;
+use bevy_xpbd_3d_interp::prelude::*;
 
-const PHYSICS_UPDATE_FREQ: f32 = 10.0;
+const PHYSICS_UPDATE_FREQ: f64 = 10.0;
 
 fn main() {
     App::new()
@@ -13,14 +13,10 @@ fn main() {
             PhysicsPlugins::default(),
             XPBDInterpolationPlugin,
         ))
-        .add_systems(Startup, setup)
-        .add_systems(
-            PhysicsSchedule,
-            update_box.before(PhysicsStepSet::BroadPhase),
-        )
-        .add_systems(Update, (toggle_interpolation, update_ui))
-        .insert_resource(PhysicsTimestep::Fixed(1.0 / PHYSICS_UPDATE_FREQ))
+        .insert_resource(Time::new_with(Physics::fixed_hz(1.0 / PHYSICS_UPDATE_FREQ)))
         .insert_resource(IsInterpolating(true)) // Has no effect on actual interpolation, is just for ui
+        .add_systems(Startup, setup)
+        .add_systems(Update, (update_box, toggle_interpolation, update_ui))
         .run();
 }
 
@@ -93,7 +89,7 @@ fn update_box(
     mut box_q: Query<(&mut AngularVelocity, &mut LinearVelocity)>,
     keyboard_input: Res<Input<KeyCode>>,
 ) {
-    let speed = 3.;
+    let speed = 4.;
     for (mut angular_velocity, mut linear_velocity) in box_q.iter_mut() {
         let mut velocity = Vec3::ZERO;
 
@@ -116,7 +112,8 @@ fn update_box(
     }
 }
 
-// Has no effect on actual interpolation, is just for ui
+// IsInterpolating has no effect on actual interpolation and is just for ui.
+// Toggle interpolation with InterpolatedPosition::pass_raw and InterpolatedRotation::pass_raw instead.
 #[derive(Resource)]
 struct IsInterpolating(bool);
 
@@ -127,10 +124,10 @@ fn toggle_interpolation(
 ) {
     if keyboard_input.just_pressed(KeyCode::Space) {
         let (mut pos, mut rot) = interp_q.single_mut();
-        pos.pass_through = !pos.pass_through;
-        rot.pass_through = !rot.pass_through;
+        pos.pass_raw = !pos.pass_raw;
+        rot.pass_raw = !rot.pass_raw;
 
-        is_interpolating.0 = !pos.pass_through;
+        is_interpolating.0 = !pos.pass_raw;
     }
 }
 
