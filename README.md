@@ -12,7 +12,7 @@ Add `bevy_xpbd` and `bevy_xpbd_interp` as dependencies:
 [dependencies]  
 bevy_xpbd_2d = "0.3.1"
 bevy_xpbd_2d_interp = "0.1.0"
-// or
+# or
 [dependencies]  
 bevy_xpbd_3d = "0.3.1"
 bevy_xpbd_3d_interp = "0.1.0"
