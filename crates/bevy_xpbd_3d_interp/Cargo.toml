@@ -20,4 +20,4 @@ required-features = ["3d"]
 
 [dependencies]
 bevy = "0.12"
-bevy_xpbd_3d = "0.3.1"
+bevy_xpbd_3d = "0.3.2"

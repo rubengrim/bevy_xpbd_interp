@@ -13,7 +13,7 @@ fn main() {
             PhysicsPlugins::default(),
             XPBDInterpolationPlugin,
         ))
-        .insert_resource(Time::new_with(Physics::fixed_hz(1.0 / PHYSICS_UPDATE_FREQ)))
+        .insert_resource(Time::new_with(Physics::fixed_hz(PHYSICS_UPDATE_FREQ)))
         .insert_resource(IsInterpolating(true)) // Has no effect on actual interpolation, is just for ui
         .add_systems(Startup, setup)
         .add_systems(Update, (update_box, toggle_interpolation, update_ui))
