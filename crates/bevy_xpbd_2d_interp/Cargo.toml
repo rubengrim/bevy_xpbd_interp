@@ -1,6 +1,6 @@
 [package]
 name = "bevy_xpbd_2d_interp"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "A simple library for interpolation of bevy_xpbd rigidbodies"
 license = "MIT OR Apache-2.0"
@@ -19,5 +19,5 @@ path = "../../src/lib.rs"
 required-features = ["2d"]
 
 [dependencies]
-bevy = "0.12"
-bevy_xpbd_2d = "0.3.2"
+bevy = "0.13"
+bevy_xpbd_2d = "0.4"

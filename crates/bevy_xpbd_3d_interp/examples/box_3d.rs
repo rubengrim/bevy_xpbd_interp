@@ -37,7 +37,7 @@ fn setup(
     // Rendered box that holds the interpolated position/rotation
     commands.spawn((
         PbrBundle {
-            mesh: mesh_assets.add(Mesh::from(shape::Box::new(1., 1., 1.))),
+            mesh: mesh_assets.add(Cuboid::from_size(Vec3::splat(1.))),
             material: material_assets.add(StandardMaterial {
                 base_color: Color::rgb(0.4, 0.8, 0.6),
                 ..default()
@@ -87,22 +87,22 @@ fn setup(
 
 fn update_box(
     mut box_q: Query<(&mut AngularVelocity, &mut LinearVelocity)>,
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     let speed = 4.;
     for (mut angular_velocity, mut linear_velocity) in box_q.iter_mut() {
         let mut velocity = Vec3::ZERO;
 
-        if keyboard_input.pressed(KeyCode::W) {
+        if keyboard_input.pressed(KeyCode::KeyW) {
             velocity.y += speed;
         }
-        if keyboard_input.pressed(KeyCode::A) {
+        if keyboard_input.pressed(KeyCode::KeyA) {
             velocity.x -= speed;
         }
-        if keyboard_input.pressed(KeyCode::S) {
+        if keyboard_input.pressed(KeyCode::KeyS) {
             velocity.y -= speed;
         }
-        if keyboard_input.pressed(KeyCode::D) {
+        if keyboard_input.pressed(KeyCode::KeyD) {
             velocity.x += speed;
         }
 
@@ -120,7 +120,7 @@ struct IsInterpolating(bool);
 fn toggle_interpolation(
     mut interp_q: Query<(&mut InterpolatedPosition, &mut InterpolatedRotation)>,
     mut is_interpolating: ResMut<IsInterpolating>,
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Space) {
         let (mut pos, mut rot) = interp_q.single_mut();

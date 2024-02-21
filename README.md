@@ -10,12 +10,12 @@ In a lot of cases interpolation makes a noticeable difference at normal/higher p
 Add `bevy_xpbd` and `bevy_xpbd_interp` as dependencies:
 ```toml
 [dependencies]  
-bevy_xpbd_2d = "0.3.2"
-bevy_xpbd_2d_interp = "0.1.1"
+bevy_xpbd_2d = "0.4"
+bevy_xpbd_2d_interp = "0.1.2"
 # or
 [dependencies]  
-bevy_xpbd_3d = "0.3.2"
-bevy_xpbd_3d_interp = "0.1.1"
+bevy_xpbd_3d = "0.4"
+bevy_xpbd_3d_interp = "0.1.2"
 ```
 
 Then add `XPBDInterpolationPlugin` to your app:
@@ -51,5 +51,6 @@ See `'crates/bevy_xpbd_2d_interp/examples/box_2d.rs'` and `'crates/bevy_xpbd_3d_
 
 | Bevy | Bevy XPBD | Bevy XPBD Interp |
 | ---- | --------- | ---------------- |
+| 0.13 | 0.4       | 0.1.2            |
 | 0.12 | 0.3.2     | 0.1.1            |
 | 0.12 | 0.3.1     | 0.1.0            |

@@ -12,6 +12,7 @@ cp -r README.md "$tmp"/.
 sed 's#\.\./\.\./src#src#g' crates/bevy_xpbd_2d_interp/Cargo.toml > "$tmp"/Cargo.toml
 cp -r crates/bevy_xpbd_2d_interp/examples "$tmp"/.
 cd "$tmp" && cargo publish --dry-run
+# cd "$tmp" && cargo publish
 
 ### Remove the 2D examples and return to previous directory
 rm -rf examples
@@ -21,5 +22,6 @@ cd "$currdir" || exit
 sed 's#\.\./\.\./src#src#g' crates/bevy_xpbd_3d_interp/Cargo.toml > "$tmp"/Cargo.toml
 cp -r crates/bevy_xpbd_3d_interp/examples "$tmp"/.
 cd "$tmp" && cargo publish --dry-run
+# cd "$tmp" && cargo publish
 
 rm -rf "$tmp"
