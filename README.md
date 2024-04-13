@@ -34,6 +34,7 @@ let physics_entity = commands
     .id();
 
 // Rendered box that uses the interpolated position/rotation
+// NOTE: The interpolated entity needs to have a `GlobalTransform` to work properly. Here it's included in the `PbrBundle`.
 commands.spawn((
     PbrBundle {
         mesh: mesh_assets.add(Mesh::from(shape::Box::new(1.0, 1.0, 1.0))),

@@ -136,9 +136,10 @@ fn interpolate_position(
         TimestepMode::Fixed {
             delta, overstep, ..
         } => (delta.as_secs_f32(), overstep.as_secs_f32()),
-        _ => panic!(
-            "The 'PhysicsTimestep' resource does not hold the 'Fixed' variant. Cannot interpolate."
-        ),
+        _ => {
+            warn!("The 'PhysicsTimestep' resource does not hold the 'Fixed' variant. Cannot interpolate.");
+            return;
+        }
     };
 
     for (mut transform, interp_position) in interp_q.iter_mut() {
@@ -166,7 +167,7 @@ fn interpolate_position(
         #[cfg(feature = "3d")]
         if interp_position.pass_raw || interp_position.previous_position == None {
             // Use the current position of the physics object directly without interpolating.
-            transform.translation = Vec3::new(current_position.0.x, current_position.0.y, 0.0);
+            transform.translation = current_position.0
         } else {
             // Interpolate between the previous and current position of the physics object.
             let lerp_factor = overstep / delta;
@@ -189,9 +190,10 @@ fn interpolate_rotation(
         TimestepMode::Fixed {
             delta, overstep, ..
         } => (delta.as_secs_f32(), overstep.as_secs_f32()),
-        _ => panic!(
-            "The 'PhysicsTimestep' resource does not hold the 'Fixed' variant. Cannot interpolate."
-        ),
+        _ => {
+            warn!("The 'PhysicsTimestep' resource does not hold the 'Fixed' variant. Cannot interpolate.");
+            return;
+        }
     };
 
     for (mut transform, interp_rotation) in interp_q.iter_mut() {
